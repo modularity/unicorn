@@ -11,7 +11,7 @@ import Main from './src/components/Main';
 import Login from './src/components/Login';
 import Register from './src/components/Register';
 
-YellowBox.ignoreWarnings(['Warning: isMounted(...)','Module RCTImageLoader']);
+YellowBox.ignoreWarnings(['Warning: isMounted(...)','Module RCTImageLoader', 'Module RCTVideoManager']);
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -23,6 +23,20 @@ export default class App extends Component<Props> {
 // navigation objects where order matters
 // nested nav objects must be initialized before referencing
 const Nav = createStackNavigator({
+  Main: { screen: Main,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Main',
+      headerLeft: null,
+      headerStyle: { backgroundColor: '#948bef' },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        fontFamily: 'Avenir',
+        color: '#fff',
+      },
+    }),
+  },
   Register: { screen: Register,
     navigationOptions: ({ navigation }) => ({
       title: 'Register',
@@ -51,20 +65,7 @@ const Nav = createStackNavigator({
       },
     }),
   },
-  Main: { screen: Main,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Main',
-      headerLeft: null,
-      headerStyle: { backgroundColor: '#948bef' },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        fontFamily: 'Avenir',
-        color: '#fff',
-      },
-    }),
-  },
+
 });
 /*
 navigationOptions: ({ navigation }) => ({

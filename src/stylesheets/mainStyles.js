@@ -20,12 +20,19 @@ module.exports =  StyleSheet.create({
     justifyContent: 'space-around',
     //margin: 10
   },
-  btn: {
+  activeBtn: {
     backgroundColor: '#ef8bc9',
     borderRadius: 20,
     padding: 20,
     margin: 20,
-    alignSelf: 'center'
+    //alignSelf: 'center'
+  },
+  inactiveBtn: {
+    backgroundColor: '#444',
+    borderRadius: 20,
+    padding: 20,
+    margin: 20,
+    //alignSelf: 'center'
   },
   btnText: {
     fontSize: 18,
