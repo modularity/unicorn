@@ -12,7 +12,6 @@ export default class Main extends Component<Props> {
     this.state = {
       isPlaying: false,
       pause: false,
-      name: 'Unicorn',
       loopAudio: Platform.Android ? false : true
     }
     this.animatedValue = new Animated.Value(0);
@@ -23,6 +22,7 @@ export default class Main extends Component<Props> {
   }
 
   render() {
+    // prep animation
     this.SetInterpolate = this.animatedValue.interpolate({
       inputRange: [0, 180],
       outputRange: ['180deg', '360deg']
@@ -30,13 +30,19 @@ export default class Main extends Component<Props> {
     const Rotate_Y_AnimatedStyle = {
       transform: [{ rotateY: this.SetInterpolate }]
     }
+
+    // pull name from navigation props
+    const { navigation } = this.props;
+    var name = navigation.getParam('name', null);
+    if (name === null) name = this.props.screenProps.name;
+
     return (
       <View style={styles.container}>
-      <Text style={styles.pageText}>Welcome {this.state.name} to	&#129412; paradise!</Text>
+      <Text style={styles.pageText}>Welcome {name} to	&#129412; paradise!</Text>
       {this.renderButtons()}
         <Animated.Image style={[Rotate_Y_AnimatedStyle, styles.logo]}
           source={require('../images/royaltyfreeunicorn.jpg')} />
-        <TouchableOpacity onPress={ () => this.props.navigation.navigate('Register')}>
+        <TouchableOpacity onPress={ () => this.props.navigation.navigate('Login')}>
             <Text style={styles.pageText}>Logout</Text>
         </TouchableOpacity>
       </View>

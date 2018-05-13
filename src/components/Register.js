@@ -1,8 +1,10 @@
 /**
-  Register page with email/password and token generation on server side
+  Register page with email/password/name
+  Once validated, their information is stored on the device via AsyncStorage
+  Then they are routed to Main
  */
 import React, { Component } from 'react';
-import { Text,TextInput,TouchableOpacity,View,Image,Linking,Alert,Platform,Modal,KeyboardAvoidingView } from 'react-native';
+import { AsyncStorage,Text,TextInput,TouchableOpacity,View,Image,Alert,Platform,Modal,KeyboardAvoidingView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../stylesheets/loginStyles';
 
@@ -26,8 +28,7 @@ export default class Register extends Component<Props> {
       <Image style={styles.logo} source={require('../images/royaltyfreeunicorn.jpg')} />
       {this.renderInputFields()}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={ () => this.RegisterPressed()}
-                          style={styles.confirmBtn}>
+        <TouchableOpacity onPress={ () => this.RegisterPressed()} style={styles.confirmBtn}>
             <Text style={styles.pageText}>Register</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={ () => this.props.navigation.navigate('Login')}>
@@ -115,47 +116,58 @@ export default class Register extends Component<Props> {
     var errorMsg = '';
     // check required fields: email, firstName, lastName, programCode
     if (this.validateEmail()) errorMsg += "Please enter a valid email. \n";
-    //if (this.state.password === '') errorMsg += "Please enter your password. \n";
     if (this.validatePassword()) errorMsg += "Your password should have at least 6 characters. \n";
     if (this.validateName()) errorMsg += "Please enter your name.";
     if (errorMsg === '') {
       this.Register();
     } else {
-      //Alert.alert("Login error", errorMsg);
       this.setState({showMsgModal: true, errMsg: errorMsg});
     }
   }
 
-
+  // The email should be in the format [...] @ [...] . [...]
   validateEmail() {
     var email = this.state.email;
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     var isValid = re.test(String(email).toLowerCase());
-    //console.warn('email', isValid);
     return !isValid;
   }
 
+  // The password being checked for a correct length of min. 6 letters or numbers
   validatePassword() {
     var password = this.state.password;
-    var notValidLen = (password.length < 6);
-    //console.warn('len',notValidLen);
-    var re = /\w/;
+    var re = /^(?=.*[\w]).{6,}$/;
     var isValid = re.test(password);
-    //console.warn('psd', isValid);
-    return !isValid || !notValidLen;
+    return !isValid;
   }
 
+  // The name must only contain letters
   validateName() {
     var name = this.state.name;
     var re = /\D/;
     var isValid = re.test(name);
-    //console.warn('name', isValid);
     return !isValid;
   }
 
+  // Save user information and route to Main
+  Register() {
+    let multi_set_pairs = [
+      ['registered', 'true'],
+      ['email', this.state.email],
+      ['password', this.state.password],
+      ['name', this.state.name],
+    ];
 
-  Register(user) {
-    this.props.navigation.navigate('Main');
+    AsyncStorage.multiSet(multi_set_pairs, (err) => {
+      multi_set_pairs.map((result, i, store) => {
+        let key = store[i][0];
+        let val = store[i][1];
+      });
+    });
+
+    this.props.navigation.navigate('Main', {
+      name: this.state.name
+    });
   }
 
 }

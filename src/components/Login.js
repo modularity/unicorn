@@ -2,7 +2,7 @@
   Login page with email/password and token generation on server side
  */
 import React, { Component } from 'react';
-import { Text,TextInput,TouchableOpacity,View,Image,Linking,Alert,Platform,Modal,KeyboardAvoidingView } from 'react-native';
+import { AsyncStorage,Text,TextInput,TouchableOpacity,View,Image,Linking,Alert,Platform,Modal,KeyboardAvoidingView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../stylesheets/loginStyles';
 
@@ -89,30 +89,39 @@ export default class Login extends Component<Props> {
         <View style={styles.modalTxtContainer}>
           <Text style={styles.h1Text}>{this.state.errMsg}</Text>
         </View>
+        <View>
+          <TouchableOpacity style={styles.registerAgain}
+                            onPress={() => this.props.navigation.navigate('Register') }>
+            <Text style={styles.pageText}>Register Again</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>);
   }
 
-  loginPressed() {
+  async loginPressed() {
     var errorMsg = '';
-    // check required fields: email, firstName, lastName, programCode
-    if (this.validateEmail()) errorMsg += "Please enter a valid email. \n";
-    if (this.state.password === '') errorMsg += "Please enter your password.";
-    if (errorMsg === '') {
-      this.login();
-    } else {
-      //Alert.alert("Login error", errorMsg);
-      this.setState({showMsgModal: true, errMsg: errorMsg});
-    }
+    if (!await this.validateEmail()) errorMsg += "Please enter a valid email. \n";
+    if (!await this.validatePassword()) errorMsg += "Please enter your password.";
+    if (errorMsg === '') this.login();
+    else this.setState({showMsgModal: true, errMsg: errorMsg});
   }
 
+  // check email input against registration email via AsyncStorage
   validateEmail() {
-    var email = this.state.email;
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    var isValid = re.test(String(email).toLowerCase());
-    return !isValid;
+    return AsyncStorage.getItem('email')
+      .then( val => val === this.state.email )
+      .catch( e => Alert.alert('Start Error', 'Hmm something went wrong checking your password.'))
   }
 
+  // check password input against registration password via AsyncStorage
+  // AsyncStorage isn't encrypted
+  // definitely recommend a web service or encryption layer
+  validatePassword() {
+    return AsyncStorage.getItem('password')
+      .then( val => val === this.state.password )
+      .catch( e => Alert.alert('Start Error', 'Hmm something went wrong checking your password.'))
+  }
 
   login(user) {
     this.props.navigation.navigate('Main');

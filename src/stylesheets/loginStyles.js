@@ -66,7 +66,7 @@ module.exports =  StyleSheet.create({
     width: btnWidth,
     height: btnHeight,
     borderRadius: 20,
-    padding: 8,
+    padding: 10,
     alignSelf: 'center'
   },
   loginText: {
@@ -139,4 +139,13 @@ module.exports =  StyleSheet.create({
     color: '#777',
     backgroundColor: 'transparent',
   },
+  registerAgain: {
+    backgroundColor: '#fcbae3',
+    width: btnWidth,
+    height: btnHeight,
+    borderRadius: 20,
+    padding: 10,
+    margin: 5,
+    alignSelf: 'center'
+    }
 });
