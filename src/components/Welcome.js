@@ -1,18 +1,19 @@
 
 import React, { Component } from 'react';
-import { Animated,Platform,Text,View,Image,TouchableOpacity } from 'react-native';
+import { NativeModules, Animated,Platform,Text,View,Image,TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import styles from '../stylesheets/mainStyles';
+import styles from '../stylesheets/welcomeStyles';
 import Video from 'react-native-video';
+//const NativeModules = require('NativeModules');
 
 type Props = {};
-export default class Main extends Component<Props> {
+export default class Welcome extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
       isPlaying: false,
       pause: false,
-      loopAudio: Platform.Android ? false : true
+      loopAudio: (Platform.OS === 'android') ? false : true
     }
     this.animatedValue = new Animated.Value(0);
     this.value = 0;
@@ -41,29 +42,31 @@ export default class Main extends Component<Props> {
       <Text style={styles.pageText}>Welcome {name} to	&#129412; paradise!</Text>
       {this.renderButtons()}
         <Animated.Image style={[Rotate_Y_AnimatedStyle, styles.logo]}
-          source={require('../images/royaltyfreeunicorn.jpg')} />
-        <TouchableOpacity onPress={ () => this.props.navigation.navigate('Login')}>
+          source={require('../images/unicornLogo.png')} />
+        <TouchableOpacity onPress={ () => this.logoutPressed()}>
             <Text style={styles.pageText}>Logout</Text>
         </TouchableOpacity>
       </View>
     );
   }
   renderButtons() {
+    //https://www.dropbox.com/s/zrl1jsdk29qdv5r/Pink Fluffy Unicorns Dancing on Rainbows - Fluffle Puff .mp3
+    // dropbox link didn't work, on iOS returns AVFoundationErrorDomain code -11800
+    // s3 streams but takes 8-12 seconds to buffer
     if (this.state.isPlaying) {
-      return ( //https://www.dropbox.com/s/zrl1jsdk29qdv5r/Pink Fluffy Unicorns Dancing on Rainbows - Fluffle Puff .mp3
+      return (
         <View>
-          <Video source={{uri: "https://www.sample-videos.com/audio/mp3/crowd-cheering.mp3"}}   // Can be a URL or a local file.
+          <Video source={{uri: "https://s3.amazonaws.com/unicorn-app/PinkFluffyUnicornsDancingonRainbows-FlufflePuff.mp3"}}   // Can be a URL or a local file.
                  ref={(ref) => {this.player = ref}}      // Store reference
                  rate={1.0}                              // 0 is paused, 1 is normal.
                  volume={1.0}                            // 0 is muted, 1 is normal.
                  muted={false}                           // Mutes the audio entirely.
                  paused={this.state.pause}               // Pauses playback entirely.
-                 resizeMode="cover"                      // Fill the whole screen at aspect ratio.*
                  repeat={this.state.loopAudio}           // Repeat forever.
                  playInBackground={false}                // Audio continues to play when app entering background.
                  playWhenInactive={false}                // [iOS] Video continues to play when control or notification center are shown.
                  ignoreSilentSwitch={"ignore"}           // [iOS] ignore | obey - When 'ignore', audio will still play with the iOS hard silent switch set to silent. When 'obey', audio will toggle with the switch. When not specified, will inherit audio settings as usual.
-                 progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
+                 progressUpdateInterval={1000.0}         // [iOS] Interval to fire onProgress (default to ~250ms)
                  onLoadStart={this.loadStart}            // Callback when video starts to load
                  onLoad={this.onLoad}                    // Callback when video loads
                  onProgress={this.onProgress}            // Callback every ~250ms with currentTime
@@ -86,29 +89,29 @@ export default class Main extends Component<Props> {
       </View>
     );
   }
-/*  Video/Audio API callbacks
+  // Video/Audio API callbacks
   loadStart = (res) => {
-    console.warn('loadStart', res);
+    console.log('loadStart', res);
   }
   onLoad = (res) => {
-    console.warn('onLoad', res);
+    console.log('onLoad', res);
   }
   onProgress = (res) => {
-    console.warn('onProgress', res);
+    console.log('onProgress', res);
   }
   onEnd = (res) => {
-    console.warn('onEnd', res);
+    console.log('onEnd', res);
   }
   videoError = (err) => {
-    console.warn('video err', err);
+    console.log('video err', err);
   }
   onBuffer = (res) => {
-    console.warn('onBuffer', res);
+    console.log('onBuffer', res);
   }
   onTimedMetadata = (res) => {
-    console.warn('onTimedMetadata', res);
+    console.log('onTimedMetadata', res);
   }
-  */
+
   // button factory: toggle playback button styles btw active and inactive mode
   renderButton(title, onPress, active) {
     var style = active ? styles.activeBtn : styles.inactiveBtn;
@@ -150,8 +153,17 @@ export default class Main extends Component<Props> {
       ).start()
   };
 
-
   stopAnimation() {
     this.animatedValue.stopAnimation();
+  }
+
+  logoutPressed() {
+    var CustomModal = NativeModules.CustomModal;
+    this.props.navigation.navigate('Login');
+    if (Platform.OS === 'android') {
+      CustomModal.show('You got logged out!', CustomModal.SHORT);
+      return;
+    }
+    CustomModal.logoutMsg('You got logged out!','We will miss you...');
   }
 }

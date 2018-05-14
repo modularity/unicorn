@@ -19,10 +19,12 @@ export default class Login extends Component<Props> {
   }
 
   render() {
+    const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
     return (
     <View style={styles.container}>
       {this.renderMessage()}
-      <Image style={styles.logo} source={require('../images/royaltyfreeunicorn.jpg')} />
+      <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={keyboardVerticalOffset}>
+      <Image style={styles.logo} source={require('../images/unicornLogo.png')} />
       {this.renderInputFields()}
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={ () => this.loginPressed()}
@@ -30,14 +32,13 @@ export default class Login extends Component<Props> {
             <Text style={styles.pageText}>Log In</Text>
         </TouchableOpacity>
       </View>
+      </KeyboardAvoidingView>
     </View>
     );
   }
 
   renderInputFields() {
-    const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
     return (<View>
-      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={keyboardVerticalOffset}>
       <View style={styles.inputSection}>
         <Icon name="envelope-o" style={styles.inputImage}/>
         <TextInput
@@ -67,13 +68,12 @@ export default class Login extends Component<Props> {
               underlineColorAndroid='transparent'
             />
       </View>
-      </KeyboardAvoidingView>
     </View>);
   }
 
   // display user error messages
   renderMessage() {
-    return (<Modal transparent={true} visible={this.state.showMsgModal} animationType={'fade'}
+    return (<Modal transparent={false} visible={this.state.showMsgModal} animationType={'fade'}
            onRequestClose={() => this.setState({showMsgModal: false}) }>
       <View style={styles.modalMsgContainer}>
         <View style={styles.modalClose}>
@@ -91,12 +91,17 @@ export default class Login extends Component<Props> {
         </View>
         <View>
           <TouchableOpacity style={styles.registerAgain}
-                            onPress={() => this.props.navigation.navigate('Register') }>
+                            onPress={() => this.routeToRegister() }>
             <Text style={styles.pageText}>Register Again</Text>
           </TouchableOpacity>
         </View>
       </View>
     </Modal>);
+  }
+
+  routeToRegister() {
+    this.setState({showMsgModal: false});
+    this.props.navigation.navigate('Register')
   }
 
   async loginPressed() {
@@ -124,7 +129,7 @@ export default class Login extends Component<Props> {
   }
 
   login(user) {
-    this.props.navigation.navigate('Main');
+    this.props.navigation.navigate('Welcome');
   }
 
 }

@@ -1,7 +1,7 @@
 /**
   Register page with email/password/name
   Once validated, their information is stored on the device via AsyncStorage
-  Then they are routed to Main
+  Then they are routed to Welcome
  */
 import React, { Component } from 'react';
 import { AsyncStorage,Text,TextInput,TouchableOpacity,View,Image,Alert,Platform,Modal,KeyboardAvoidingView } from 'react-native';
@@ -22,28 +22,29 @@ export default class Register extends Component<Props> {
   }
 
   render() {
+    const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
     return (
     <View style={styles.container}>
       {this.renderMessage()}
-      <Image style={styles.logo} source={require('../images/royaltyfreeunicorn.jpg')} />
+      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={keyboardVerticalOffset}>
+      <Image style={styles.logo} source={require('../images/unicornLogo.png')} />
       {this.renderInputFields()}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={ () => this.RegisterPressed()} style={styles.confirmBtn}>
+        <TouchableOpacity onPress={ () => this.registerPressed()} style={styles.confirmBtn}>
             <Text style={styles.pageText}>Register</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={ () => this.props.navigation.navigate('Login')}>
             <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
       </View>
+      </KeyboardAvoidingView>
     </View>
     );
   }
 
   renderInputFields() {
-    const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
     return (<View>
-      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={keyboardVerticalOffset}>
-      <View style={styles.inputSection}>
+        <View style={styles.inputSection}>
         <Icon name="envelope-o" style={styles.inputImage}/>
         <TextInput
               style={styles.input}
@@ -81,18 +82,17 @@ export default class Register extends Component<Props> {
                 onChangeText={(name) => this.setState({name})}
                 value={this.state.name}
                 autoCapitalize='none'
-                keyboardType='email-address'
+                keyboardType='default'
                 autoCorrect={false}
                 underlineColorAndroid='transparent'
               />
       </View>
-      </KeyboardAvoidingView>
     </View>);
   }
 
   // display user error messages
   renderMessage() {
-    return (<Modal transparent={true} visible={this.state.showMsgModal} animationType={'fade'}
+    return (<Modal transparent={false} visible={this.state.showMsgModal} animationType={'fade'}
            onRequestClose={() => this.setState({showMsgModal: false}) }>
       <View style={styles.modalMsgContainer}>
         <View style={styles.modalClose}>
@@ -112,7 +112,7 @@ export default class Register extends Component<Props> {
     </Modal>);
   }
 
-  RegisterPressed() {
+  registerPressed() {
     var errorMsg = '';
     // check required fields: email, firstName, lastName, programCode
     if (this.validateEmail()) errorMsg += "Please enter a valid email. \n";
@@ -138,6 +138,7 @@ export default class Register extends Component<Props> {
     var password = this.state.password;
     var re = /^(?=.*[\w]).{6,}$/;
     var isValid = re.test(password);
+    //if (isValid) this.setState({passwordChecked: false});
     return !isValid;
   }
 
@@ -149,7 +150,7 @@ export default class Register extends Component<Props> {
     return !isValid;
   }
 
-  // Save user information and route to Main
+  // Save user information and route to Welcome
   Register() {
     let multi_set_pairs = [
       ['registered', 'true'],
@@ -165,7 +166,7 @@ export default class Register extends Component<Props> {
       });
     });
 
-    this.props.navigation.navigate('Main', {
+    this.props.navigation.navigate('Welcome', {
       name: this.state.name
     });
   }

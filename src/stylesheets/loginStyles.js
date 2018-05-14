@@ -1,30 +1,24 @@
 import {StyleSheet, Dimensions} from 'react-native';
 var window = Dimensions.get('window');
-var btnWidth = window.width*.5;
+var btnWidth = window.width*.4;
 var btnHeight = window.width*.12;
+var inputWidth = window.width*.5;
 
 module.exports =  StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     backgroundColor: '#fff',
   },
   logo: {
-    width: btnWidth,
-    height: btnWidth*.8,
+    width: inputWidth,
+    height: inputWidth,
     borderRadius: btnWidth/2,
     resizeMode: 'center',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: btnHeight,
-  },
-  loginContainer: {
-    width: window.width*.7,
-    height: window.height*.6,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   inputSection: {
     flexDirection: 'row',
@@ -38,7 +32,7 @@ module.exports =  StyleSheet.create({
     margin: 8
   },
   inputImage: {
-    padding: 10,
+    padding: 5,
     margin: 5,
     height: 25,
     width: 25,
@@ -46,13 +40,13 @@ module.exports =  StyleSheet.create({
     alignItems: 'center'
   },
   input: {
-    width: window.width*.5,
+    width: inputWidth,
     height: btnHeight,
     padding: 8,
   },
   buttonContainer: {
-    //justifyContent: 'space-between',
-    //alignItems: 'stretch'
+    justifyContent: 'space-between',
+    alignItems: 'stretch'
   },
   pageText: {
     fontSize: 18,
@@ -104,14 +98,15 @@ module.exports =  StyleSheet.create({
    alignItems: 'center',
  },
  infoRadius: {
+   width: btnWidth/2,
+   height: btnWidth/2,
+   borderRadius: btnWidth/4,
    borderWidth:2,
-   borderColor:'#ecf0f1',
-   alignItems:'center',
-   justifyContent:'center',
-   width:100,
-   height:100,
+   borderColor:'#fff',
+
    backgroundColor:'#fff',
-   borderRadius:100,
+   justifyContent:'center',
+   alignItems: 'center'
  },
  errImage: {
    width: btnWidth/2,

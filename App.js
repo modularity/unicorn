@@ -7,7 +7,7 @@ import { ActivityIndicator,AsyncStorage,Text,View,YellowBox } from 'react-native
 import { createStackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import Main from './src/components/Main';
+import Welcome from './src/components/Welcome';
 import Login from './src/components/Login';
 import Register from './src/components/Register';
 
@@ -71,9 +71,9 @@ export default class App extends Component<Props> {
 // navigation objects where order matters
 // nested nav objects must be initialized before referencing
 const MainNav = createStackNavigator({
-  Main: { screen: Main,
+  Welcome: { screen: Welcome,
     navigationOptions: ({ navigation }) => ({
-      title: 'Main',
+      title: 'Welcome',
       headerLeft: null,
       headerStyle: { backgroundColor: '#948bef' },
       headerTintColor: '#fff',
@@ -144,7 +144,7 @@ const Nav = createStackNavigator({
       },
     }),
   },
-  Main: { screen: Main,
+  Welcome: { screen: Welcome,
     navigationOptions: ({ navigation }) => ({
       title: 'Main',
       headerLeft: null,
